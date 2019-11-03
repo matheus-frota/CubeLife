@@ -74,7 +74,7 @@ while  deveContinuar:
             controleDeAparicaoBlocos = False
         elif controleDeAparicaoBlocos == False:
             for i in range(0,NUMERODEBLOCOS):
-                posX = i*(LARGURAJANELA/NUMERODEBLOCOS) + 3*(TAMANHOJOGADOR)
+                posX = i*(LARGURAJANELA/NUMERODEBLOCOS) + 2*(NUMERODEBLOCOS)
                 posY = -TAMANHOBLOCO
                 velRandom = 5
                 blocos.append({'objRect': pygame.Rect(posX, posY, TAMANHOBLOCO, TAMANHOBLOCO), 'cor': BRANCO, 'vel': velRandom})
@@ -86,7 +86,7 @@ while  deveContinuar:
     # movendo o jogador
     for i,jogador in enumerate(jogadores[:]):
         try:
-            fj.moverJogador(jogador, movimentacaoAleatoriaJogadores["j{}".format(i)][CONTADORMOVIMENTOSJOGADOR], (LARGURAJANELA, ALTURAJANELA))
+            fj.moverJogador(jogador, movimentacaoAleatoriaJogadores[jogador["id"]][CONTADORMOVIMENTOSJOGADOR], (LARGURAJANELA, ALTURAJANELA))
         except IndexError:
             fj.moverJogador(jogador, {'esquerda': False, 'direita': False, 'cima': False, 'baixo': False}, (LARGURAJANELA, ALTURAJANELA))
     
@@ -116,8 +116,15 @@ while  deveContinuar:
 
     # Verificando se todos os jogadores já morreram
     if len(jogadores) == 0:
-        ag.selecaoIndividuos(movimentacaoAleatoriaJogadores,NUMERODEJOGADORES)
-        deveContinuar = False 
+        jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores,NUMERODEJOGADORES)
+        ag.crossover(jogadoresSelecionados)
+        contador = 0
+        blocos = []
+        controleDeAparicaoBlocos = True
+        CONTADORMOVIMENTOSJOGADOR = 0
+        jogadores = fj.criarJogadores(NUMERODEJOGADORES)
+        movimentacaoAleatoriaJogadores = ag.gerarPopulacao(NUMERODEJOGADORES,NUMERODEJOGADAS)
+        #deveContinuar = False 
 
 # encerrando módulos de Pygame
 pygame.quit()
