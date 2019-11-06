@@ -1,20 +1,21 @@
 import numpy as np
 import random
+import funcoes_jogo as fj
 
-# Definindo função gerarPopulacao(), que recebe a quantidade de jogadores e seta uma X quantidade de jogadas
+# Definindo função gerarPopulacao(), que recebe os jogadores e seta uma X quantidade de jogadas
 # para os jogadores de forma aleatória.
-def gerarPopulacao(NUM_JOGADORES, NUM_JOGADAS):
+def gerarPopulacao(jogadores, NUM_JOGADAS):
     jogadores_teclas = {}
     # Laço para criar as jogadas de cada jogador
-    for jogador in range(0, NUM_JOGADORES):
-        jogadores_teclas["j{}".format(jogador)] = []
+    for jogador in jogadores:
+        jogadores_teclas[jogador["id"]] = []
         for jogadas in range(NUM_JOGADAS):
             aux = {}
             aux["direita"] = random.randint(0,1)
             aux["esquerda"] = random.randint(0,1)
             aux["baixo"] = random.randint(0,1)
             aux["cima"] = random.randint(0,1)
-            jogadores_teclas["j{}".format(jogador)].append(aux)
+            jogadores_teclas[jogador["id"]].append(aux)
     return jogadores_teclas
 
 # Definindo função divisivelPorDois(), para ver se o numero é divisivel por 2. Para evitar que tenha
@@ -44,16 +45,17 @@ nomeJogador = lambda x : [i[0] for i in x]
 
 # Definindo função de selecionar os melhores individuos.
 # Usando estratégia de eletismo para essa selecao.
-def eletismo(jogadores, NUM_JOGADORES):
+def eletismo(movimentoJogadores, NUM_JOGADORES):
     # Variáveis auxiliares
     informacaoDeJogadorETempo = {}
+    jogadoreSelecionados = []
     # Identificando quantidade de jogadores que serão selecionados
     quantidadeJogadores = quantidadeDeJogadoreSelecionados(NUM_JOGADORES)
     # Reorganizando informações do dicionario, em um dicionario menor com apenas a informação do tempo de vida
-    for id in jogadores.keys():
-        informacaoDeJogadorETempo[id] = jogadores[id][-1]
+    for id in movimentoJogadores.keys():
+        informacaoDeJogadorETempo[id] = movimentoJogadores[id][-1]
     jogadoresOrdenados = ordenarValoresDicionario(informacaoDeJogadorETempo)
-    return filtrarDicionarioComApenasJogadoresSelecionados(jogadores,nomeJogador(jogadoresOrdenados[:quantidadeJogadores]))
+    return filtrarDicionarioComApenasJogadoresSelecionados(movimentoJogadores,nomeJogador(jogadoresOrdenados[:quantidadeJogadores]))
 
 # Definindo função formarGrupos(), para formar os grupos dos jogadores para o crossover.
 def formarGrupos(identificacaoJogadores, quantidadeJogadores):
@@ -66,11 +68,19 @@ def formarGrupos(identificacaoJogadores, quantidadeJogadores):
 
 # Definindo função de crossover dos indivíduos e gerando novos indivíduos.
 def crossover(jogadoresSelecionados):
+    # Variáveis auxiliares
+    novosJogadores = []
+    movimentoJogadorFilho = {}
     quantidadeJogadores = len(jogadoresSelecionados)
     identificacaoJogadores = list(jogadoresSelecionados.keys())
-    gruposJogadores = formarGrupos(identificacaoJogadores,quantidadeJogadores)
-    for jogador1,jogador2 in gruposJogadores:
-        for movimentosJogador1,movimentoJogador2 in zip(jogadoresSelecionados[jogador1],jogadoresSelecionados[jogador2]):
-            print(movimentosJogador1)
-            print(movimentoJogador2)
+    gruposJogadoresParaRecombinacao = formarGrupos(identificacaoJogadores,quantidadeJogadores)
+    for jogador1,jogador2 in gruposJogadoresParaRecombinacao:
+        novosJogadoresFilhos = fj.criarJogadores(None,2)
+        for jogadorFilho in novosJogadoresFilhos:
+            movimentoJogadorFilho[jogadorFilho["id"]] = []
+            for movimentosJogador1,movimentoJogador2 in zip(jogadoresSelecionados[jogador1],jogadoresSelecionados[jogador2]):
+                #movimentoJogadorFilho[jogadorFilho["id"]].append()
+                print(movimentosJogador1)
+                print(movimentoJogador2)
         break
+

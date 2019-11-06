@@ -12,10 +12,10 @@ janela = pygame.display.set_mode((LARGURAJANELA, ALTURAJANELA))
 pygame.display.set_caption('Cubo')
 
 # criando jogadores
-jogadores = fj.criarJogadores(NUMERODEJOGADORES)
+jogadores = fj.criarJogadores(None,NUMERODEJOGADORES)
 
 # Gerando movimentos aleatorios iniciais dos jogadores
-movimentacaoAleatoriaJogadores = ag.gerarPopulacao(NUMERODEJOGADORES,NUMERODEJOGADAS)
+movimentacaoAleatoriaJogadores = ag.gerarPopulacao(jogadores,NUMERODEJOGADAS)
 
 # definindo o dicionario que guardará as direcoes pressionadas
 #teclas = {'esquerda': False, 'direita': False, 'cima': False, 'baixo': False}
@@ -116,14 +116,15 @@ while  deveContinuar:
 
     # Verificando se todos os jogadores já morreram
     if len(jogadores) == 0:
-        jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores,NUMERODEJOGADORES)
+        # Não tem sentido pegar os jogadores, pois todos ja morreram!
+        jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores, NUMERODEJOGADORES)
         ag.crossover(jogadoresSelecionados)
         contador = 0
         blocos = []
         controleDeAparicaoBlocos = True
         CONTADORMOVIMENTOSJOGADOR = 0
-        jogadores = fj.criarJogadores(NUMERODEJOGADORES)
-        movimentacaoAleatoriaJogadores = ag.gerarPopulacao(NUMERODEJOGADORES,NUMERODEJOGADAS)
+        jogadores = fj.criarJogadores(None,NUMERODEJOGADORES)
+        movimentacaoAleatoriaJogadores = ag.gerarPopulacao(jogadores,NUMERODEJOGADAS)
         #deveContinuar = False 
 
 # encerrando módulos de Pygame

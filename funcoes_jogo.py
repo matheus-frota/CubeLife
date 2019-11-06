@@ -1,5 +1,6 @@
 # Importando funções
 import pygame, random, time
+import numpy as np
 from config import *
 
 # definindo a função moverJogador(), que registra a posição do jogador
@@ -30,17 +31,32 @@ def moverTeclas(teclas):
     return teclas
 
 # Definindo a função criarJogadores(), que cria os jogadores
-def criarJogadores(NUMERODEJOGADORES):
+def criarJogadores(identificacaoJogador, NUMERODEJOGADORES):
     jogadores = []
-    for i in range(0,NUMERODEJOGADORES):
-        # Cores
-        nivel_vermelho = random.randint(10, 200)
-        nivel_verde = random.randint(10, 200)
-        nivel_azul = random.randint(10, 200)
-        #Posição inicial
-        posX = (LARGURAJANELA/2 - TAMANHOBLOCO)
-        posY = (ALTURAJANELA/2 - TAMANHOBLOCO)
-        # Tempo de vida
-        inicio = time.time()
-        jogadores.append({'id':"j{}".format(i),'objRect': pygame.Rect(posX, posY, TAMANHOJOGADOR, TAMANHOJOGADOR), 'cor': (nivel_vermelho,nivel_verde,nivel_azul), 'vel': VELOCIDADEJOGADOR,'inicio': inicio})
-    return jogadores
+    if identificacaoJogador == None:
+        for i in range(0,NUMERODEJOGADORES):
+            numeroIdentificacaoRandomico = np.random.randint(0,1000000)
+            # Cores
+            nivel_vermelho = random.randint(10, 200)
+            nivel_verde = random.randint(10, 200)
+            nivel_azul = random.randint(10, 200)
+            #Posição inicial
+            posX = (LARGURAJANELA/2 - TAMANHOBLOCO)
+            posY = (ALTURAJANELA/2 - TAMANHOBLOCO)
+            # Tempo de vida
+            inicio = time.time()
+            jogadores.append({'id':"j{}".format(numeroIdentificacaoRandomico),'objRect': pygame.Rect(posX, posY, TAMANHOJOGADOR, TAMANHOJOGADOR), 'cor': (nivel_vermelho,nivel_verde,nivel_azul), 'vel': VELOCIDADEJOGADOR,'inicio': inicio})
+        return jogadores
+    elif identificacaoJogador != None:
+        for i in range(0,NUMERODEJOGADORES):
+            # Cores
+            nivel_vermelho = random.randint(10, 200)
+            nivel_verde = random.randint(10, 200)
+            nivel_azul = random.randint(10, 200)
+            #Posição inicial
+            posX = (LARGURAJANELA/2 - TAMANHOBLOCO)
+            posY = (ALTURAJANELA/2 - TAMANHOBLOCO)
+            # Tempo de vida
+            inicio = time.time()
+            jogadores.append({'id':identificacaoJogador,'objRect': pygame.Rect(posX, posY, TAMANHOJOGADOR, TAMANHOJOGADOR), 'cor': (nivel_vermelho,nivel_verde,nivel_azul), 'vel': VELOCIDADEJOGADOR,'inicio': inicio})
+        return jogadores
