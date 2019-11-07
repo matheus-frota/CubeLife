@@ -10,18 +10,20 @@ relogio = pygame.time.Clock()
 # criando janela
 janela = pygame.display.set_mode((LARGURAJANELA, ALTURAJANELA))
 pygame.display.set_caption('Cubo')
+fonte = pygame.font.Font(None,40)
 
 # criando jogadores
-jogadores = fj.criarJogadores(NUMERODEJOGADORES)
+jogadores = fj.criarJogadores(None,NUMERODEJOGADORES)
 
 # Gerando movimentos aleatorios iniciais dos jogadores
-movimentacaoAleatoriaJogadores = ag.gerarPopulacao(NUMERODEJOGADORES,NUMERODEJOGADAS)
+movimentacaoAleatoriaJogadores = ag.gerarPopulacao(jogadores,NUMERODEJOGADAS)
 
 # definindo o dicionario que guardará as direcoes pressionadas
 #teclas = {'esquerda': False, 'direita': False, 'cima': False, 'baixo': False}
 
 # inicializando outras variáveis
 contador = 0
+geracao = 0
 blocos = []
 deveContinuar = True
 controleDeAparicaoBlocos = True
@@ -74,7 +76,7 @@ while  deveContinuar:
             controleDeAparicaoBlocos = False
         elif controleDeAparicaoBlocos == False:
             for i in range(0,NUMERODEBLOCOS):
-                posX = i*(LARGURAJANELA/NUMERODEBLOCOS) + 3*(TAMANHOJOGADOR)
+                posX = i*(LARGURAJANELA/NUMERODEBLOCOS) + 2*(NUMERODEBLOCOS)
                 posY = -TAMANHOBLOCO
                 velRandom = 5
                 blocos.append({'objRect': pygame.Rect(posX, posY, TAMANHOBLOCO, TAMANHOBLOCO), 'cor': BRANCO, 'vel': velRandom})
@@ -86,7 +88,7 @@ while  deveContinuar:
     # movendo o jogador
     for i,jogador in enumerate(jogadores[:]):
         try:
-            fj.moverJogador(jogador, movimentacaoAleatoriaJogadores["j{}".format(i)][CONTADORMOVIMENTOSJOGADOR], (LARGURAJANELA, ALTURAJANELA))
+            fj.moverJogador(jogador, movimentacaoAleatoriaJogadores[jogador["id"]][CONTADORMOVIMENTOSJOGADOR], (LARGURAJANELA, ALTURAJANELA))
         except IndexError:
             fj.moverJogador(jogador, {'esquerda': False, 'direita': False, 'cima': False, 'baixo': False}, (LARGURAJANELA, ALTURAJANELA))
     
@@ -109,15 +111,20 @@ while  deveContinuar:
         fj.moverBloco(bloco)
         pygame.draw.rect(janela, bloco['cor'], bloco['objRect'])
 
+    # Verificando se todos os jogadores já morreram
+    if len(jogadores) == 0:
+        # Não tem sentido pegar os jogadores, pois todos ja morreram!
+        informacaoJogadorTempo,jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores, NUMERODEJOGADORES)
+        jogadores, movimentacaoAleatoriaJogadores = ag.crossover(jogadoresSelecionados)
+        print(informacaoJogadorTempo)
+        contador = 0
+        blocos = []
+        controleDeAparicaoBlocos = True
+        CONTADORMOVIMENTOSJOGADOR = 0
+    
     # atualizando a janela
     CONTADORMOVIMENTOSJOGADOR+=1
     pygame.display.update()
     relogio.tick(20)
-
-    # Verificando se todos os jogadores já morreram
-    if len(jogadores) == 0:
-        ag.selecaoIndividuos(movimentacaoAleatoriaJogadores,NUMERODEJOGADORES)
-        deveContinuar = False 
-
 # encerrando módulos de Pygame
 pygame.quit()
