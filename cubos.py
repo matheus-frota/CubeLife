@@ -10,6 +10,7 @@ relogio = pygame.time.Clock()
 # criando janela
 janela = pygame.display.set_mode((LARGURAJANELA, ALTURAJANELA))
 pygame.display.set_caption('Cubo')
+fonte = pygame.font.Font(None,40)
 
 # criando jogadores
 jogadores = fj.criarJogadores(None,NUMERODEJOGADORES)
@@ -22,6 +23,7 @@ movimentacaoAleatoriaJogadores = ag.gerarPopulacao(jogadores,NUMERODEJOGADAS)
 
 # inicializando outras variáveis
 contador = 0
+geracao = 0
 blocos = []
 deveContinuar = True
 controleDeAparicaoBlocos = True
@@ -109,23 +111,20 @@ while  deveContinuar:
         fj.moverBloco(bloco)
         pygame.draw.rect(janela, bloco['cor'], bloco['objRect'])
 
-    # atualizando a janela
-    CONTADORMOVIMENTOSJOGADOR+=1
-    pygame.display.update()
-    relogio.tick(20)
-
     # Verificando se todos os jogadores já morreram
     if len(jogadores) == 0:
         # Não tem sentido pegar os jogadores, pois todos ja morreram!
-        jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores, NUMERODEJOGADORES)
-        ag.crossover(jogadoresSelecionados)
+        informacaoJogadorTempo,jogadoresSelecionados = ag.eletismo(movimentacaoAleatoriaJogadores, NUMERODEJOGADORES)
+        jogadores, movimentacaoAleatoriaJogadores = ag.crossover(jogadoresSelecionados)
+        print(informacaoJogadorTempo)
         contador = 0
         blocos = []
         controleDeAparicaoBlocos = True
         CONTADORMOVIMENTOSJOGADOR = 0
-        jogadores = fj.criarJogadores(None,NUMERODEJOGADORES)
-        movimentacaoAleatoriaJogadores = ag.gerarPopulacao(jogadores,NUMERODEJOGADAS)
-        #deveContinuar = False 
-
+    
+    # atualizando a janela
+    CONTADORMOVIMENTOSJOGADOR+=1
+    pygame.display.update()
+    relogio.tick(20)
 # encerrando módulos de Pygame
 pygame.quit()

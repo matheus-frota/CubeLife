@@ -55,7 +55,7 @@ def eletismo(movimentoJogadores, NUM_JOGADORES):
     for id in movimentoJogadores.keys():
         informacaoDeJogadorETempo[id] = movimentoJogadores[id][-1]
     jogadoresOrdenados = ordenarValoresDicionario(informacaoDeJogadorETempo)
-    return filtrarDicionarioComApenasJogadoresSelecionados(movimentoJogadores,nomeJogador(jogadoresOrdenados[:quantidadeJogadores]))
+    return jogadoresOrdenados[0],filtrarDicionarioComApenasJogadoresSelecionados(movimentoJogadores,nomeJogador(jogadoresOrdenados[:quantidadeJogadores]))
 
 # Definindo função formarGrupos(), para formar os grupos dos jogadores para o crossover.
 def formarGrupos(identificacaoJogadores, quantidadeJogadores):
@@ -75,12 +75,22 @@ def crossover(jogadoresSelecionados):
     identificacaoJogadores = list(jogadoresSelecionados.keys())
     gruposJogadoresParaRecombinacao = formarGrupos(identificacaoJogadores,quantidadeJogadores)
     for jogador1,jogador2 in gruposJogadoresParaRecombinacao:
+        controleParaMudarOJogador = 0
         novosJogadoresFilhos = fj.criarJogadores(None,2)
+        caracteristicasJogador1 = fj.criarJogadores(jogador1,1)
+        caracteristicasJogador2 = fj.criarJogadores(jogador2,1)
         for jogadorFilho in novosJogadoresFilhos:
             movimentoJogadorFilho[jogadorFilho["id"]] = []
-            for movimentosJogador1,movimentoJogador2 in zip(jogadoresSelecionados[jogador1],jogadoresSelecionados[jogador2]):
+            for movimentosJogador1,movimentosJogador2 in zip(jogadoresSelecionados[jogador1],jogadoresSelecionados[jogador2]):
                 #movimentoJogadorFilho[jogadorFilho["id"]].append()
-                print(movimentosJogador1)
-                print(movimentoJogador2)
-        break
+                if (type(movimentosJogador1) == dict) & (type(movimentosJogador2) == dict) & (controleParaMudarOJogador == 0): 
+                    movimentoJogadorFilho[jogadorFilho["id"]].append({"direita":movimentosJogador1["direita"],"esquerda":movimentosJogador1["esquerda"],"baixo":movimentosJogador2["baixo"],"cima":movimentosJogador2["cima"]})
+                elif (type(movimentosJogador1) == dict) & (type(movimentosJogador2) == dict) & (controleParaMudarOJogador == 1): 
+                    movimentoJogadorFilho[jogadorFilho["id"]].append({"direita":movimentosJogador2["direita"],"esquerda":movimentosJogador2["esquerda"],"baixo":movimentosJogador1["baixo"],"cima":movimentosJogador1["cima"]})
+            controleParaMudarOJogador = 1
+        movimentoJogadorFilho[jogador1],movimentoJogadorFilho[jogador2] =  jogadoresSelecionados[jogador1],jogadoresSelecionados[jogador2]
+        novosJogadores.extend(novosJogadoresFilhos)
+        novosJogadores.extend(caracteristicasJogador1)
+        novosJogadores.extend(caracteristicasJogador2)
+    return novosJogadores, movimentoJogadorFilho
 
